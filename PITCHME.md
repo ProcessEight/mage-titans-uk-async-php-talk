@@ -40,7 +40,7 @@ Need to learn a whole new language and language ecosystem
 
 ## Flow of Execution: The synchronous model
 
-Programs are executed top-to-bottom
+Programs are executed imperatively
 
 The order of execution is predictable
 
@@ -92,9 +92,9 @@ Therefore we must avoid I/O at all costs.
 
 ---
 
-## Coroutines
+## Co-routines
 
-Coroutines are interruptible (or pausable) functions. They are implemented in PHP using Generators and the yield keyword. The main difference between Coroutines and plain Generators is that data or exceptions can be 'sent' into the Coroutine, whereas a simple Generator can only produce output.
+Co-routines are interruptible (or pausable) functions. The main difference between Co-routines and plain Generators is that data or exceptions can be 'sent' into the Co-routine, whereas a simple Generator can only produce output.
 
 ---
 
@@ -102,15 +102,15 @@ Coroutines are interruptible (or pausable) functions. They are implemented in PH
 
 A Promise is a temporary placeholder used as a result whenever the result is not immediately available.
 
-Once the result is available, then an event is emitted, which code can listen to act upon.
+Once the result is ready, an event is emitted, which can be subscribed to and acted upon.
 
 ---
 
 ## Events / Event Loop
 
-In event-driven programming, the event loop is used to subscribe to events and then act on them once they are dispatched.
+The event loop is used to subscribe to events and then act on them once they are dispatched.
 
-The loop continues running until no more events are dispatched (i.e. There is nothing to do). 
+The loop continues running until no more events are dispatched (i.e. There is nothing more to do). 
 
 ---
 
@@ -131,6 +131,8 @@ The loop continues running until no more events are dispatched (i.e. There is no
 ---
 
 ## Data import/export?
+
+How does this differ from Async Bulk API community project?
 
 ---
 
