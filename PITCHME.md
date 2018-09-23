@@ -28,9 +28,13 @@ http://github.com/ProcessEight
 
 In synchronous programming:
 
+@ul
+
 * We issue a statement,
 * We wait for it to complete...
 * ..and then move on to the next statement.
+
+@ulend
 
 Therefore, the order of execution is predictable
 
@@ -40,35 +44,60 @@ Therefore, the order of execution is predictable
 
 In asynchronous programming
 
+@ul
+
 * We issue a statement
 * While we are waiting for it to complete, we can perform other tasks
 * When it has finished, we run a callback function
+
+@ulend
 
 This does mean the order of execution is not predictable
 
 ---
 
-## 'calculations are fast, input/output is slow.'
+## 'Calculations are fast, input/output is slow.'
 
 So why wait? Asynchronous programming allows us to move onto something else (i.e. Continue the flow of execution) whilst waiting for I/O
 
 ---
 
-## What it is (Asynchronous), What it isn't (multi-threaded)
+## What it is (Asynchronous), What it isn't (parallel execution/multi-threaded)
 
-Disadvantages of threads (See Learning Event-Driven PHP ebook p14)
+@ul
+
+* Asynchronous programming allows us to continue execution whilst waiting for operations to complete
+* Parallel execution/multi-threading means two or more operations can be processed at the same time
+
+@ulend
+
+Note:
+- PHP runs in a single thread, so there is no parallel execution. 
+- In the asynchronous model, tasks are not being run in parallel, instead, each task is being executed bit by bit, little by little.
+- It may look like things run in parallel because the program continuously switches between different parts of tasks and processes them.
+- Disadvantages of threads (See Learning Event-Driven PHP ebook p14)
 
 ---
 
-## Why not use NodeJS or Go?
+## Why use PHP?
 
-Need to re-tool your whole stack and deployment framework for the new languages
+@ul
 
-Need to learn a whole new language and language ecosystem
+- PHP _can_ be used to build asynchronous applications 
+
+- You don't need to learn a whole new language and ecosystem
+
+- No magic or special extensions required - this is the same PHP you're already using
+
+- Need to re-tool your whole stack and deployment framework for the new languages
+
+@ulend
 
 ---
 
 ## Approaches to Async programming in PHP
+
+@ul
 
 * AmPHP
     * Pros: Mature, well documented, uses co-routines
@@ -77,6 +106,8 @@ Need to learn a whole new language and language ecosystem
 * ReactPHP
     * Pros: Mature, active project, no PHP extensions needed
     * Cons: Limited feature set, no co-routines
+
+@ulend
 
 ---
 
@@ -90,13 +121,29 @@ We need to adopt a different way of thinking about how we design programs
 
 ## The event-driven approach
 
+@ul
+
+Event-driven programming implements the Reactor Pattern
+
+It represents an application flow control that is determined by events or changes in state.
+
+Therefore you cannot say exactly when anything in your program is going to happen.
+
+@ulend
+
+---
+
+@ul
+
 Subscribe to events (callbacks)
 
 React to events
 
 Rinse, repeat
 
-This does mean the order of execution is not predictable
+@ulend
+
+---
 
 ## Blocking vs. Non-blocking
 
@@ -114,17 +161,25 @@ Co-routines are interruptible (or pausable) functions. The main difference betwe
 
 ## Promises
 
-A Promise is a temporary placeholder used as a result whenever the result is not immediately available.
+@ul
 
-Once the result is ready, an event is emitted, which can be subscribed to and acted upon.
+- A Promise is a temporary placeholder used as a result whenever the result is not immediately available.
+
+- Once the result is ready, an event is emitted, which can be subscribed to and acted upon.
+
+@ulend
 
 ---
 
 ## Events / Event Loop
 
-The event loop is used to subscribe to events and then act on them once they are dispatched.
+@ul
 
-The loop continues running until no more events are dispatched (i.e. There is nothing more to do). 
+- The event loop is used to subscribe to events and then act on them once they are dispatched.
+
+- The loop continues running until no more events are dispatched (i.e. There is nothing more to do). 
+
+@ulend
 
 ---
 
