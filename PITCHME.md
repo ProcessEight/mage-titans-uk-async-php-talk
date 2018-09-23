@@ -24,6 +24,36 @@ http://github.com/ProcessEight
 
 ---
 
+## Flow of Execution: The synchronous model
+
+In synchronous programming:
+
+* We issue a statement,
+* We wait for it to complete...
+* ..and then move on to the next statement.
+
+Therefore, the order of execution is predictable
+
+---
+
+## Flow of Execution: The asynchronous model
+
+In asynchronous programming
+
+* We issue a statement
+* While we are waiting for it to complete, we can perform other tasks
+* When it has finished, we run a callback function
+
+This does mean the order of execution is not predictable
+
+---
+
+## 'calculations are fast, input/output is slow.'
+
+So why wait? Asynchronous programming allows us to move onto something else (i.e. Continue the flow of execution) whilst waiting for I/O
+
+---
+
 ## What it is (Asynchronous), What it isn't (multi-threaded)
 
 Disadvantages of threads (See Learning Event-Driven PHP ebook p14)
@@ -35,32 +65,6 @@ Disadvantages of threads (See Learning Event-Driven PHP ebook p14)
 Need to re-tool your whole stack and deployment framework for the new languages
 
 Need to learn a whole new language and language ecosystem
-
----
-
-## Flow of Execution: The synchronous model
-
-Programs are executed imperatively
-
-The order of execution is predictable
-
----
-
-## Flow of Execution: The asynchronous model
-
-Subscribe to events
-
-React to events
-
-Rinse, repeat
-
-The order of execution is not predictable
-
----
-
-## 'calculations are fast, input/output is slow.'
-
-So why wait? Async allows us to move onto something else (i.e. Continue the flow of execution) whilst waiting for I/O
 
 ---
 
@@ -83,6 +87,16 @@ Async programming gives us a different set of tools to work with
 We need to adopt a different way of thinking about how we design programs
 
 ---
+
+## The event-driven approach
+
+Subscribe to events (callbacks)
+
+React to events
+
+Rinse, repeat
+
+This does mean the order of execution is not predictable
 
 ## Blocking vs. Non-blocking
 
