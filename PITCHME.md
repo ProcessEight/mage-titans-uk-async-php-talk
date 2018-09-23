@@ -34,9 +34,9 @@ In synchronous programming:
 * We wait for it to complete...
 * ..and then move on to the next statement.
 
-@ulend
-
 Therefore, the order of execution is predictable
+
+@ulend
 
 ---
 
@@ -50,9 +50,9 @@ In asynchronous programming
 * While we are waiting for it to complete, we can perform other tasks
 * When it has finished, we run a callback function
 
-@ulend
-
 This does mean the order of execution is not predictable
+
+@ulend
 
 ---
 
@@ -89,7 +89,44 @@ Note:
 
 - No magic or special extensions required - this is the same PHP you're already using
 
-- Need to re-tool your whole stack and deployment framework for the new languages
+- No need to re-tool your whole stack and deployment framework
+
+@ulend
+
+Notes:
+- Use what you are already using (i.e. PHP, stack, deployment)
+
+---
+
+## Paradigm shift
+
+Async programming gives us a different set of tools to work with
+
+We need to adopt a different way of thinking about how we design programs
+
+---
+
+## The event-driven approach
+
+@ul
+
+* Event-driven programming implements the Reactor Pattern
+
+* It represents an application flow control that is determined by events or changes in state.
+
+* Therefore you cannot say exactly when anything in your program is going to happen.
+
+@ulend
+
+---
+
+@ul
+
+* Subscribe to events (callbacks)
+
+* React to events
+
+* Rinse, repeat
 
 @ulend
 
@@ -111,40 +148,6 @@ Note:
 
 ---
 
-## Paradigm shift
-
-Async programming gives us a different set of tools to work with
-
-We need to adopt a different way of thinking about how we design programs
-
----
-
-## The event-driven approach
-
-@ul
-
-Event-driven programming implements the Reactor Pattern
-
-It represents an application flow control that is determined by events or changes in state.
-
-Therefore you cannot say exactly when anything in your program is going to happen.
-
-@ulend
-
----
-
-@ul
-
-Subscribe to events (callbacks)
-
-React to events
-
-Rinse, repeat
-
-@ulend
-
----
-
 ## Blocking vs. Non-blocking
 
 I/O is blocking. The program waits until the I/O operation has finished.
@@ -155,7 +158,13 @@ Therefore we must avoid I/O at all costs.
 
 ## Co-routines
 
-Co-routines are interruptible (or pausable) functions. The main difference between Co-routines and plain Generators is that data or exceptions can be 'sent' into the Co-routine, whereas a simple Generator can only produce output.
+@ul
+
+Co-routines are interruptible (or pausable) functions. 
+
+The main difference between Co-routines and plain Generators is that data or exceptions can be 'sent' into the Co-routine, whereas a simple Generator can only produce output.
+
+@ulend
 
 ---
 
@@ -211,22 +220,40 @@ How does this differ from Async Bulk API community project?
 
 Explain business case: The different price-affecting criteria, any other relevant details
 
+* Base price
+* Tier price
+* Customer Group
+* Product Group
+* Quantity
+
 ---
 
 Explain the basic architecture of the solution
 
 ---
 
-Briefly cover which tools, libraries, frameworks were used. Keep it vague/brief. It is not important to go into detail.
+Briefly cover which tools, libraries, frameworks were used. 
+Keep it brief. 
+It is not important to go into detail at this point
 
-ReactPHP
-RecoilPHP
+* LEMP stack
+* ReactPHP
+* RecoilPHP
 
 ---
 
-Side by side demos (not live) of sync solution and async solution, demonstrating how long it takes to import an API response.
-Remember, there's no 'magic' here - this is plain PHP, no extensions needed, just used asynchronously
+Side by side demos (not live) of sync solution and async solution, demonstrating how long it takes to import an API response, both syncly and asyncly. 
+
+Note:
+- Remember, there's no 'magic' here - this is plain PHP, no extensions needed
+- We're just using it asynchronously
 
 ---
 
 Link to demo implementation or smaller demos which demo each concept (proof of concept apps) in GitHub
+
+---
+
+Questions, etc
+
+exit(0);
