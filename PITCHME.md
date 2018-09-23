@@ -93,7 +93,7 @@ Note:
 
 @ulend
 
-Notes:
+Note:
 - Use what you are already using (i.e. PHP, stack, deployment)
 
 ---
