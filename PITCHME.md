@@ -24,8 +24,6 @@ http://github.com/ProcessEight
 
 ---
 
-## Flow of Execution: The synchronous model
-
 In synchronous programming:
 
 @ul
@@ -34,15 +32,15 @@ In synchronous programming:
 * We wait for it to complete...
 * ..and then move on to the next statement.
 
-Therefore, the order of execution is predictable
-
 @ulend
+
+Note:
+- Let's kick off with what we already know
+- Therefore, the order of execution is predictable
 
 ---
 
-## Flow of Execution: The asynchronous model
-
-In asynchronous programming
+In asynchronous programming:
 
 @ul
 
@@ -50,40 +48,53 @@ In asynchronous programming
 * While we are waiting for it to complete, we can perform other tasks
 * When it has finished, we run a callback function
 
+@ulend
+
+Note:
 This does mean the order of execution is not predictable
 
-@ulend
+---
+
+## Calculations are fast.
+
+## Input/output is slow.
+
+Note:
+Async programming takes advantage of this idea
+CPU cycles are measured in nanoseconds, whereas I/O cycles are measured in milliseconds
 
 ---
 
-## 'Calculations are fast, input/output is slow.'
+## Asynchronous != parallel 
 
-So why wait? Asynchronous programming allows us to move onto something else (i.e. Continue the flow of execution) whilst waiting for I/O
-
----
-
-## What it is (Asynchronous), What it isn't (parallel execution/multi-threaded)
-
-@ul
-
-* Asynchronous programming allows us to continue execution whilst waiting for operations to complete
-* Parallel execution/multi-threading means two or more operations can be processed at the same time
-
-@ulend
+## or multi-threaded 
 
 Note:
 - PHP runs in a single thread, so there is no parallel execution. 
 - In the asynchronous model, tasks are not being run in parallel, instead, each task is being executed bit by bit, little by little.
 - It may look like things run in parallel because the program continuously switches between different parts of tasks and processes them.
+- Asynchronous programming allows us to continue execution whilst waiting for operations to complete
+- Parallel execution/multi-threading means two or more operations can be processed at the same time
 - Disadvantages of threads (See Learning Event-Driven PHP ebook p14)
+
+---
+
+- Async programming gives us a different set of tools to work with
+
+@ul
+
+- We need to adopt a different way of thinking about how we design programs
+
+@ulend
+
+Note:
+- e.g. Avoiding blocking (I/O) operations
 
 ---
 
 ## Why use PHP?
 
 @ul
-
-- PHP _can_ be used to build asynchronous applications 
 
 - You don't need to learn a whole new language and ecosystem
 
@@ -98,11 +109,80 @@ Note:
 
 ---
 
-## Paradigm shift
+## Approaches to Async programming in PHP
 
-Async programming gives us a different set of tools to work with
+@ul
 
-We need to adopt a different way of thinking about how we design programs
+* AmPHP
+    * Pros: Mature, well documented
+    * Cons: Requires extension
+
+* ReactPHP
+    * Pros: Mature, active project, no PHP extensions needed
+    * Cons: Limited feature set
+
+@ulend
+
+Note:
+- Whilst there were a lot of libraries to implement async in PHP, these two are now the most up-to-date and frequently maintained
+
+---
+
+## Asynchronous programming concepts
+
+---
+
+## Blocking vs. Non-blocking
+
+I/O is blocking. The program waits until the I/O operation has finished.
+
+Therefore we must avoid I/O at all costs.
+
+Note:
+- Avoid blocking by using promises
+- Or by forking the process using `exec`
+
+---
+
+## Promises
+
+@ul
+
+- A Promise is a temporary placeholder used as a result whenever the result is not immediately available.
+
+- Once the result is ready, an event is emitted, which can be subscribed to and acted upon.
+
+- Promises are a way of managing callbacks and avoiding 'callback hell'
+
+@ulend
+
+Note:
+- Instead of having multiple nested callbacks, Promises can only ever be one level deep
+- They are still executed asynchronously
+
+---
+
+## Co-routines
+
+@ul
+
+- Co-routines are interruptible (or pausable) functions. 
+
+- They can be used to wrap promises, so that code which calls co-routines can be written in a synchronous fashion
+
+@ulend
+
+---
+
+## Event Loop
+
+@ul
+
+- The event loop is used to subscribe to events and then act on them once they are dispatched.
+
+- The loop continues running until no more events are dispatched (i.e. There is nothing more to do). 
+
+@ulend
 
 ---
 
@@ -120,87 +200,11 @@ We need to adopt a different way of thinking about how we design programs
 
 ---
 
-@ul
-
-* Subscribe to events (callbacks)
-
-* React to events
-
-* Rinse, repeat
-
-@ulend
+## How to solve common problems in Magento using async techniques
 
 ---
 
-## Approaches to Async programming in PHP
-
-@ul
-
-* AmPHP
-    * Pros: Mature, well documented, uses co-routines
-    * Cons: Requires extension
-
-* ReactPHP
-    * Pros: Mature, active project, no PHP extensions needed
-    * Cons: Limited feature set, no co-routines
-
-@ulend
-
----
-
-## Blocking vs. Non-blocking
-
-I/O is blocking. The program waits until the I/O operation has finished.
-
-Therefore we must avoid I/O at all costs.
-
----
-
-## Co-routines
-
-@ul
-
-Co-routines are interruptible (or pausable) functions. 
-
-The main difference between Co-routines and plain Generators is that data or exceptions can be 'sent' into the Co-routine, whereas a simple Generator can only produce output.
-
-@ulend
-
----
-
-## Promises
-
-@ul
-
-- A Promise is a temporary placeholder used as a result whenever the result is not immediately available.
-
-- Once the result is ready, an event is emitted, which can be subscribed to and acted upon.
-
-@ulend
-
----
-
-## Events / Event Loop
-
-@ul
-
-- The event loop is used to subscribe to events and then act on them once they are dispatched.
-
-- The loop continues running until no more events are dispatched (i.e. There is nothing more to do). 
-
-@ulend
-
----
-
-## How to solve common problems in Magento using async techniques:
-
----
-
-## Bulk operations, e.g. Image processing
-
----
-
-## Indexing
+## Bulk image processing
 
 ---
 
@@ -210,35 +214,63 @@ The main difference between Co-routines and plain Generators is that data or exc
 
 ## Data import/export?
 
-How does this differ from Async Bulk API community project?
+Note:
+- How does this differ from Async Bulk API community project?
 
 ---
 
-## The integration (the 2 million prices):
+## The integration 
 
 ---
 
-Explain business case: The different price-affecting criteria, any other relevant details
+## The problem
+
+Price-affecting criteria:
 
 * Base price
 * Tier price
 * Customer Group
 * Product Group
-* Quantity
+
+Note:
+- Explain business case: The different price-affecting criteria, any other relevant details
 
 ---
 
+## The approach
+
+Split the process into four stages:
+
+@ul
+
+- Query API
+
+- Validate response
+
+- Calculate prices according to clients' business logic
+
+- Save prices
+
+@ulend
+
+Note:
 Explain the basic architecture of the solution
 
 ---
 
+## The tools used
+
+* ReactPHP Components:
+    * EventLoop
+    * Promise
+    * Stream
+    * ChildProcess 
+* RecoilPHP
+
+Note:
 Briefly cover which tools, libraries, frameworks were used. 
 Keep it brief. 
 It is not important to go into detail at this point
-
-* LEMP stack
-* ReactPHP
-* RecoilPHP
 
 ---
 
@@ -254,6 +286,6 @@ Link to demo implementation or smaller demos which demo each concept (proof of c
 
 ---
 
-Questions, etc
+## Thank you!
 
-exit(0);
+`<?= $questions ?? exit(0); ?>`
