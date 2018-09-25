@@ -1,12 +1,6 @@
-# Coroutines, Promises and Event Loops, Oh My! Getting Asynchronous with PHP
+## Coroutines, Promises and Event Loops, Oh My! Getting Asynchronous with PHP
 
 Simon Frost
-
-Senior Backend Magento Engineer, Magium Commerce
-
-@ProcessEight
-
-http://github.com/ProcessEight
 
 ---
 
@@ -16,11 +10,12 @@ Senior Backend Magento Engineer, Magium Commerce
 
 2x Magento Certified
 
-Working with PHP for ten years, Magento for six
-
 @ProcessEight
 
 http://github.com/ProcessEight
+
+Note:
+Working with PHP for ten years, Magento for six
 
 ---
 
@@ -79,9 +74,11 @@ Note:
 
 ---
 
-- Async programming gives us a different set of tools to work with
+## Programming Asynchronously
 
 @ul
+
+- Async programming gives us a different set of tools to work with
 
 - We need to adopt a different way of thinking about how we design programs
 
@@ -89,6 +86,71 @@ Note:
 
 Note:
 - e.g. Avoiding blocking (I/O) operations
+
+---
+
+## Core concepts
+
+Note:
+- These concepts are the tools we can use to build async programs
+
+---
+
+## Promises
+
+@ul
+
+- A Promise is a temporary placeholder used as a result whenever the result is not immediately available.
+
+- Once the result is ready, an event is emitted, which can be subscribed to and acted upon.
+
+- Promises are a way of managing callbacks and avoiding 'callback hell'
+
+@ulend
+
+Note:
+- Instead of having multiple nested callbacks, Promises can only ever be one level deep
+- They are still executed asynchronously
+
+---
+
+## Co-routines
+
+@ul
+
+- Co-routines are interruptible (or pausable) functions. 
+
+- They can be used to wrap promises, so that code which calls co-routines can be written in a more synchronous fashion
+
+@ulend
+
+---
+
+## Event Loop
+
+@ul
+
+- The event loop is used to subscribe to events and then act on them once they are dispatched.
+
+- The loop continues running until no more events are dispatched (i.e. There is nothing more to do). 
+
+@ulend
+
+---
+
+## Blocking vs. Non-blocking
+
+- A 'blocking' operation is one which blocks program execution.
+
+- E.g. I/O is blocking. The program has to wait until the I/O operation has finished.
+
+- Therefore we must avoid blocking operations where possible.
+
+- Unavoidable 'blocking' operations, like file system access, can be wrapped in a Promise, or forked into a new child process which continues in the background 
+
+Note:
+- Avoid blocking by using promises
+- Or by forking the process using `exec`
 
 ---
 
@@ -128,64 +190,6 @@ Note:
 
 ---
 
-## Asynchronous programming concepts
-
----
-
-## Blocking vs. Non-blocking
-
-I/O is blocking. The program waits until the I/O operation has finished.
-
-Therefore we must avoid I/O at all costs.
-
-Note:
-- Avoid blocking by using promises
-- Or by forking the process using `exec`
-
----
-
-## Promises
-
-@ul
-
-- A Promise is a temporary placeholder used as a result whenever the result is not immediately available.
-
-- Once the result is ready, an event is emitted, which can be subscribed to and acted upon.
-
-- Promises are a way of managing callbacks and avoiding 'callback hell'
-
-@ulend
-
-Note:
-- Instead of having multiple nested callbacks, Promises can only ever be one level deep
-- They are still executed asynchronously
-
----
-
-## Co-routines
-
-@ul
-
-- Co-routines are interruptible (or pausable) functions. 
-
-- They can be used to wrap promises, so that code which calls co-routines can be written in a synchronous fashion
-
-@ulend
-
----
-
-## Event Loop
-
-@ul
-
-- The event loop is used to subscribe to events and then act on them once they are dispatched.
-
-- The loop continues running until no more events are dispatched (i.e. There is nothing more to do). 
-
-@ulend
-
----
-
 ## The event-driven approach
 
 @ul
@@ -196,93 +200,142 @@ Note:
 
 * Therefore you cannot say exactly when anything in your program is going to happen.
 
+* Both AmPHP and ReactPHP implement the Reactor Pattern
+
 @ulend
 
 ---
 
-## How to solve common problems in Magento using async techniques
+### The 'Hello World' of asynchronous PHP
+
+---
+
+```php
+// Create the event loop
+$loop = React\EventLoop\Factory::create();
+
+// Create a new web server which will dispatch the following response 
+// for every request it receives
+$server = new React\Http\Server(function (Psr\Http\Message\ServerRequestInterface $request) {
+    // Our generic response
+    return new React\Http\Response(
+        200,
+        array('Content-Type' => 'text/plain'),
+        "Hello World!\n"
+    );
+});
+
+// Start a new server listening on port 8080
+$socket = new React\Socket\Server(8080, $loop);
+$server->listen($socket);
+
+echo "Server running at http://127.0.0.1:8080\n";
+
+// Start the loop; Run the program
+$loop->run();
+```
+@[01-02]
+@[04-06]
+@[7-12]
+@[15-17]
+@[21-23]
+---
+
+```bash
+# Start the server in one window
+$ php -f react-hello-world-server.php
+Server running at http://127.0.0.1:8080
+```
+@[02]
+@[03]
+
+---
+
+```bash
+# Send a request to it in another
+$ curl http://127.0.0.1:8080
+Hello World!
+```
+@[02]
+@[03]
+
+---
+
+## Novel ways to use async techniques in Magento
 
 ---
 
 ## Bulk image processing
 
+@ul
+
+* The sync way:
+    * Process images in sequence. Finish one before starting another.
+
+* The async way:
+    * Fork a new process for each image resize or upload operation.
+
+@ulend
+
+Note:
+- Forking processes is recommended when working with the filesystem in async programs, because of blocking issues
+- Fork the process so it runs in the background
+- Using the ChildProcess React component
+
 ---
 
-## Bulk saves/deletes
+## Bulk database CRUD operations 
+
+@ul
+
+* The sync way:
+    * Load the whole resultset into memory, then process it
+
+* The async way
+    * Load each row of the result into memory one at a time, then process it
+ 
+```php
+$stream = $connection->queryStream('SELECT * FROM user');
+$stream->on('data', function ($row) {
+    echo $row['name'] . PHP_EOL;
+});
+$stream->on('end', function () {
+    echo 'Completed.';
+});
+```
+
+@ulend
+
+Note:
+- The `react/mysql` library was used here
 
 ---
 
-## Data import/export?
+## Data import/export
+
+@ul
+
+* The sync way:
+    * Load the whole file/dataset into memory, then start processing it 
+
+* The async way:
+    * Use the `ReactPHP Stream` component to read and write large files/datasets asynchronously, i.e. One chunk at a time
+
+@ulend
 
 Note:
 - How does this differ from Async Bulk API community project?
 
 ---
 
-## The integration 
-
----
-
-## The problem
-
-Price-affecting criteria:
-
-* Base price
-* Tier price
-* Customer Group
-* Product Group
-
-Note:
-- Explain business case: The different price-affecting criteria, any other relevant details
-
----
-
-## The approach
-
-Split the process into four stages:
+## Summary
 
 @ul
 
-- Query API
-
-- Validate response
-
-- Calculate prices according to clients' business logic
-
-- Save prices
+- Using asynchronous programming libraries like ReactPHP, we can drastically cut down on the amount of memory our scripts consume
+- Which also can massively improve performance
 
 @ulend
-
-Note:
-Explain the basic architecture of the solution
-
----
-
-## The tools used
-
-* ReactPHP Components:
-    * EventLoop
-    * Promise
-    * Stream
-    * ChildProcess 
-* RecoilPHP
-
-Note:
-Briefly cover which tools, libraries, frameworks were used. 
-Keep it brief. 
-It is not important to go into detail at this point
-
----
-
-Side by side demos (not live) of sync solution and async solution, demonstrating how long it takes to import an API response, both syncly and asyncly. 
-
-Note:
-- Remember, there's no 'magic' here - this is plain PHP, no extensions needed
-- We're just using it asynchronously
-
----
-
-Link to demo implementation or smaller demos which demo each concept (proof of concept apps) in GitHub
 
 ---
 
