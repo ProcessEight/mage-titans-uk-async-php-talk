@@ -328,6 +328,39 @@ Note:
 
 ---
 
+## Integrating Async PHP with Magento
+
+---
+
+## The 'microservice' approach
+
+@ul
+
+* All the async code is located outside Magento
+* The microservice communicates with Magento via the API
+
+@ulend
+
+Note:
+- More of an all-or-nothing approach
+
+---
+
+## The 'isolation' approach
+
+@ul
+
+* Async code is only used in isolated locations
+
+
+@ulend
+
+Note:
+- Not all to take advantage of all async advantages
+- A compromise
+
+---
+
 ## Summary
 
 @ul
