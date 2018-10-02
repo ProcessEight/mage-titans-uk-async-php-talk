@@ -1,4 +1,4 @@
-## Coroutines, Promises and Event Loops, Oh My! Getting Asynchronous with PHP
+## Through the Looking Glass: Adventures in Asynchronous PHP Land
 
 Simon Frost
 
@@ -16,6 +16,10 @@ http://github.com/ProcessEight
 
 Note:
 Working with PHP for ten years, Magento for six
+
+---
+
+# Introduction
 
 ---
 
