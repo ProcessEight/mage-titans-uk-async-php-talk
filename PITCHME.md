@@ -21,6 +21,22 @@ Working with PHP for ten years, Magento for six
 
 # Introduction
 
+* What is async?
+* How can it benefit us?
+* How can we use it in PHP?
+* How can we use it in Magento?
+
+---
+
+## What is Async?
+
+* The ability to execute operations out of order, sometimes in reaction to external events
+* E.g. Ajax
+* E.g. Email queues in Magento (deferred sending of emails)
+
+Note:
+We are familiar with async patterns in other areas of development
+
 ---
 
 In synchronous programming:
@@ -34,7 +50,6 @@ In synchronous programming:
 @ulend
 
 Note:
-- Let's kick off with what we already know
 - Therefore, the order of execution is predictable
 
 ---
@@ -50,17 +65,7 @@ In asynchronous programming:
 @ulend
 
 Note:
-This does mean the order of execution is not predictable
-
----
-
-## Calculations are fast.
-
-## Input/output is slow.
-
-Note:
-Async programming takes advantage of this idea
-CPU cycles are measured in nanoseconds, whereas I/O cycles are measured in milliseconds
+- Therefore, the order of execution is NOT predictable
 
 ---
 
@@ -75,6 +80,16 @@ Note:
 - Asynchronous programming allows us to continue execution whilst waiting for operations to complete
 - Parallel execution/multi-threading means two or more operations can be processed at the same time
 - Disadvantages of threads (See Learning Event-Driven PHP ebook p14)
+
+---
+
+## Calculations are fast.
+
+## Input/output is slow.
+
+Note:
+Async programming takes advantage of this idea
+CPU cycles are measured in nanoseconds, whereas I/O cycles are measured in milliseconds
 
 ---
 
