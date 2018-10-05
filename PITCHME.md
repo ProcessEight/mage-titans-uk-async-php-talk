@@ -21,10 +21,15 @@ Working with PHP for ten years, Magento for six
 
 # Introduction
 
-* What is async?
-* How can it benefit us?
-* How can we use it in PHP?
-* How can we use it in Magento?
+* Intro to Async
+  * What is async?
+  * How can it benefit us?
+  * How can we use it in PHP?
+* Examples of novel and unique ways that async can be used in your Magento store:
+  * How can we use it in Magento?
+* Real-world example 
+  * API Integration example
+  * Two million prices
 
 ---
 
@@ -33,13 +38,14 @@ Working with PHP for ten years, Magento for six
 * The ability to execute operations out of order, sometimes in reaction to external events
 * E.g. Ajax
 * E.g. Email queues in Magento (deferred sending of emails)
+* E.g. Gearman
 
 Note:
 We are familiar with async patterns in other areas of development
 
 ---
 
-In synchronous programming:
+In synchronous (imperative) programming:
 
 @ul
 
@@ -54,7 +60,7 @@ Note:
 
 ---
 
-In asynchronous programming:
+In asynchronous (event-driven) programming:
 
 @ul
 
@@ -128,6 +134,7 @@ Note:
 @ulend
 
 Note:
+- Use this example: https://github.com/recoilphp/recoil/blob/master/examples/dns-react
 - Instead of having multiple nested callbacks, Promises can only ever be one level deep
 - They are still executed asynchronously
 
@@ -137,11 +144,19 @@ Note:
 
 @ul
 
-- Co-routines are interruptible (or pausable) functions. 
 
-- They can be used to wrap promises, so that code which calls co-routines can be written in a more synchronous fashion
+- Functions that can be suspended and resumed whilst maintaining their state. 
+
+- This is useful in asynchronous applications, as the coroutine can be suspended 
+whilst waiting for some task to complete or information to arrive, 
+leaving the CPU free to perform other tasks.
+
+- They are often used to write async code in a sync fashion
 
 @ulend
+
+Note:
+- Use this example: https://github.com/recoilphp/recoil/blob/master/examples/dns
 
 ---
 
@@ -159,6 +174,8 @@ Note:
 
 ## Blocking vs. Non-blocking
 
+@ul
+
 - A 'blocking' operation is one which blocks program execution.
 
 - E.g. I/O is blocking. The program has to wait until the I/O operation has finished.
@@ -167,9 +184,27 @@ Note:
 
 - Unavoidable 'blocking' operations, like file system access, can be wrapped in a Promise, or forked into a new child process which continues in the background 
 
+@ulend
+
 Note:
 - Avoid blocking by using promises
 - Or by forking the process using `exec`
+
+---
+
+## The event-driven approach
+
+@ul
+
+* Event-driven programming implements the Reactor Pattern
+
+* It represents an application flow control that is determined by events or changes in state.
+
+* Therefore you cannot say exactly when anything in your program is going to happen.
+
+* Both AmPHP and ReactPHP implement the Reactor Pattern
+
+@ulend
 
 ---
 
@@ -190,38 +225,20 @@ Note:
 
 ---
 
-## Approaches to Async programming in PHP
+## Choose your tool
 
 @ul
 
-* AmPHP
-    * Pros: Mature, well documented
-    * Cons: Requires extension
-
 * ReactPHP
-    * Pros: Mature, active project, no PHP extensions needed
-    * Cons: Limited feature set
+    
+* AmPHP
 
 @ulend
 
 Note:
 - Whilst there were a lot of libraries to implement async in PHP, these two are now the most up-to-date and frequently maintained
-
----
-
-## The event-driven approach
-
-@ul
-
-* Event-driven programming implements the Reactor Pattern
-
-* It represents an application flow control that is determined by events or changes in state.
-
-* Therefore you cannot say exactly when anything in your program is going to happen.
-
-* Both AmPHP and ReactPHP implement the Reactor Pattern
-
-@ulend
+- ReactPHP: Mature, active project, no PHP extensions needed
+- AmPHP: Mature, well documented, though requires extension
 
 ---
 
