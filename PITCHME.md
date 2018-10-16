@@ -57,10 +57,11 @@ In synchronous (imperative) programming:
 
 Note:
 - Therefore, the order of execution is predictable
+- The code in an asynchronous program DOES have to be executed in the order it was written.
 
 ---
 
-In asynchronous (event-driven) programming:
+In asynchronous programming:
 
 @ul
 
@@ -72,40 +73,34 @@ In asynchronous (event-driven) programming:
 
 Note:
 - Therefore, the order of execution is NOT predictable
-
+- This distinction becomes important later
+- The code in an asynchronous program DOES NOT have to be executed in the order it was written.
+  
 ---
 
-## Asynchronous != parallel 
-
-## or multi-threaded 
-
-Note:
-- PHP runs in a single thread, so there is no parallel execution. 
-- In the asynchronous model, tasks are not being run in parallel, instead, each task is being executed bit by bit, little by little.
-- It may look like things run in parallel because the program continuously switches between different parts of tasks and processes them.
-- Asynchronous programming allows us to continue execution whilst waiting for operations to complete
-- Parallel execution/multi-threading means two or more operations can be processed at the same time
-- Disadvantages of threads (See Learning Event-Driven PHP ebook p14)
-
----
-
-## Calculations are fast.
-
-## Input/output is slow.
-
-Note:
-Async programming takes advantage of this idea
-CPU cycles are measured in nanoseconds, whereas I/O cycles are measured in milliseconds
-
----
-
-## Programming Asynchronously
+## Calculations (CPU) are fast, Input/output (I/O) is slow.
 
 @ul
 
-- Async programming gives us a different set of tools to work with
+* Moore's Law means CPUs are faster than ever 
+* I/O has become the bottleneck
+
+@ulend
+
+Note:
+- Async programming takes advantage of this idea by maximising CPU usage (which is really fast)...
+- ...and minimising I/O usage (which is much slower, relatively speaking)
+- CPU cycles are measured in nanoseconds, whereas I/O cycles are measured in milliseconds
+
+---
+
+## Programming Asynchronously: Core Concepts
+
+@ul
 
 - We need to adopt a different way of thinking about how we design programs
+
+- Async programming gives us a different set of tools to do this
 
 @ulend
 
@@ -114,29 +109,16 @@ Note:
 
 ---
 
-## Core concepts
-
-Note:
-- These concepts are the tools we can use to build async programs
-
----
-
 ## Promises
-
-@ul
 
 - A Promise is a temporary placeholder used as a result whenever the result is not immediately available.
 
-- Once the result is ready, an event is emitted, which can be subscribed to and acted upon.
-
-- Promises are a way of managing callbacks and avoiding 'callback hell'
-
-@ulend
-
 Note:
-- Use this example: https://github.com/recoilphp/recoil/blob/master/examples/dns-react
+- Once the result is ready, an event is emitted, which can be subscribed to and acted upon.
+- Promises are a way of managing callbacks and avoiding 'callback hell'
 - Instead of having multiple nested callbacks, Promises can only ever be one level deep
 - They are still executed asynchronously
+- Use this example: https://github.com/recoilphp/recoil/blob/master/examples/dns-react
 
 ---
 
@@ -144,18 +126,16 @@ Note:
 
 @ul
 
-
 - Functions that can be suspended and resumed whilst maintaining their state. 
 
-- This is useful in asynchronous applications, as the coroutine can be suspended 
-whilst waiting for some task to complete or information to arrive, 
+- The coroutine can be suspended whilst waiting for some task to complete or information to arrive, 
 leaving the CPU free to perform other tasks.
-
-- They are often used to write async code in a sync fashion
 
 @ulend
 
 Note:
+- They are often used to write async code in a sync fashion
+- Implemented in PHP using `Generators` and the `yield` keyword
 - Use this example: https://github.com/recoilphp/recoil/blob/master/examples/dns
 
 ---
@@ -163,6 +143,8 @@ Note:
 ## Event Loop
 
 @ul
+
+- Used with the 'Reactor' pattern, a.k.a Event-driven programming
 
 - The event loop is used to subscribe to events and then act on them once they are dispatched.
 
@@ -172,39 +154,34 @@ Note:
 
 ---
 
-## Blocking vs. Non-blocking
+## Implementing Async Programming using Event-Driven Programming
 
 @ul
-
-- A 'blocking' operation is one which blocks program execution.
-
-- E.g. I/O is blocking. The program has to wait until the I/O operation has finished.
-
-- Therefore we must avoid blocking operations where possible.
-
-- Unavoidable 'blocking' operations, like file system access, can be wrapped in a Promise, or forked into a new child process which continues in the background 
-
-@ulend
-
-Note:
-- Avoid blocking by using promises
-- Or by forking the process using `exec`
-
----
-
-## The event-driven approach
-
-@ul
-
-* Event-driven programming implements the Reactor Pattern
 
 * It represents an application flow control that is determined by events or changes in state.
 
 * Therefore you cannot say exactly when anything in your program is going to happen.
 
-* Both AmPHP and ReactPHP implement the Reactor Pattern
+@ulend
+
+---
+
+## Event-driven programming with PHP
+
+@ul
+
+* ReactPHP: Set of components written in Pure PHP to add event-driven programming features to your app 
+
+* RecoilPHP: A fork of ReactPHP, which includes support for co-routines as well 
+    
+* AmPHP: A PHP framework for building complete async programs in PHP. Optional PHP extension required for some features
 
 @ulend
+
+Note:
+- There were a lot of libraries to implement event driven programming in PHP 
+- However, work on that goal has now coalesced around these projects
+- These are now the most up-to-date and frequently maintained
 
 ---
 
@@ -221,83 +198,24 @@ Note:
 @ulend
 
 Note:
+- You don't even need to use the latest bang-up-to-date version (though it obviously helps)
 - Use what you are already using (i.e. PHP, stack, deployment)
 
 ---
 
-## Choose your tool
+## Novel ways to use async techniques in Magento
+
+A task is a good candidate for the event-driven programming approach if:
 
 @ul
 
-* ReactPHP
-    
-* AmPHP
+* We don't care too much about the order in which things happen
+
+* We want to deal with vast amounts of data, but only have limited resources (e.g. RAM)
+
+* We can break it down in smaller sub-tasks and wrap each one in a child process, which does not need to communicate with other child processes
 
 @ulend
-
-Note:
-- Whilst there were a lot of libraries to implement async in PHP, these two are now the most up-to-date and frequently maintained
-- ReactPHP: Mature, active project, no PHP extensions needed
-- AmPHP: Mature, well documented, though requires extension
-
----
-
-### The 'Hello World' of asynchronous PHP
-
----
-
-```php
-// Create the event loop
-$loop = React\EventLoop\Factory::create();
-
-// Create a new web server which will dispatch the following response 
-// for every request it receives
-$server = new React\Http\Server(function (Psr\Http\Message\ServerRequestInterface $request) {
-    // Our generic response
-    return new React\Http\Response(
-        200,
-        array('Content-Type' => 'text/plain'),
-        "Hello World!\n"
-    );
-});
-
-// Start a new server listening on port 8080
-$socket = new React\Socket\Server(8080, $loop);
-$server->listen($socket);
-
-echo "Server running at http://127.0.0.1:8080\n";
-
-// Start the loop; Run the program
-$loop->run();
-```
-@[01-02]
-@[04-06]
-@[7-12]
-@[15-17]
-@[21-23]
----
-
-```bash
-# Start the server in one window
-$ php -f react-hello-world-server.php
-Server running at http://127.0.0.1:8080
-```
-@[02]
-@[03]
-
----
-
-```bash
-# Send a request to it in another
-$ curl http://127.0.0.1:8080
-Hello World!
-```
-@[02]
-@[03]
-
----
-
-## Novel ways to use async techniques in Magento
 
 ---
 
@@ -306,17 +224,18 @@ Hello World!
 @ul
 
 * The sync way:
-    * Process images in sequence. Finish one before starting another.
+    * Process images sequentially in batches. Finish one batch before starting another.
 
 * The async way:
-    * Fork a new process for each image resize or upload operation.
+    * Process images asyncly in batches. Start a new process for each batch and wrap each process in a promise. Wait for each promise to resolve.  
 
 @ulend
 
 Note:
 - Forking processes is recommended when working with the filesystem in async programs, because of blocking issues
-- Fork the process so it runs in the background
 - Using the ChildProcess React component
+
+- Add sync/async screenshots of image import command here
 
 ---
 
@@ -329,21 +248,12 @@ Note:
 
 * The async way
     * Load each row of the result into memory one at a time, then process it
- 
-```php
-$stream = $connection->queryStream('SELECT * FROM user');
-$stream->on('data', function ($row) {
-    echo $row['name'] . PHP_EOL;
-});
-$stream->on('end', function () {
-    echo 'Completed.';
-});
-```
 
 @ulend
 
 Note:
-- The `react/mysql` library was used here
+- Allows us to process potentially infinitely large resultsets
+- Magento async index example?
 
 ---
 
@@ -353,47 +263,29 @@ Note:
 
 * The sync way:
     * Load the whole file/dataset into memory, then start processing it 
+    * Alternatively, break it up into batches and process each batch sequentially
 
 * The async way:
-    * Use the `ReactPHP Stream` component to read and write large files/datasets asynchronously, i.e. One chunk at a time
+    * Stream the file and process one line at a time
 
 @ulend
 
 Note:
+- The sync way is limited by the memory you have available at the time the script runs
+- The async way is limited only by the amount of memory it takes to process one line of the file at a time
+- Allows us to process ridiculously large (think GB) or even infinitely large files (because it's just a stream after all)
+- Not suitable if the rows in a file must be read in a certain order (i.e. Importing config products) 
+- Using the `ReactPHP Stream` component
+
 - How does this differ from Async Bulk API community project?
 
 ---
 
-## Integrating Async PHP with Magento
+## Example of an Integration with Magento 2
 
 ---
 
-## The 'microservice' approach
 
-@ul
-
-* All the async code is located outside Magento
-* The microservice communicates with Magento via the API
-
-@ulend
-
-Note:
-- More of an all-or-nothing approach
-
----
-
-## The 'isolation' approach
-
-@ul
-
-* Async code is only used in isolated locations
-
-
-@ulend
-
-Note:
-- Not all to take advantage of all async advantages
-- A compromise
 
 ---
 
@@ -401,8 +293,9 @@ Note:
 
 @ul
 
-- Using asynchronous programming libraries like ReactPHP, we can drastically cut down on the amount of memory our scripts consume
-- Which also can massively improve performance
+- By writing our programs using event-driven programming patterns, we can drastically improve performance, whilst drastically reducing the amount of resources needed
+- It's not a magic bullet though - some tasks are not suited to this approach
+- It depends entirely on what your use-case is
 
 @ulend
 
