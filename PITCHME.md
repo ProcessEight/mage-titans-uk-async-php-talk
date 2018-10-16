@@ -25,27 +25,26 @@ Working with PHP for ten years, Magento for six
   * What is async?
   * How can it benefit us?
   * How can we use it in PHP?
-* Examples of novel and unique ways that async can be used in your Magento store:
-  * How can we use it in Magento?
+* Using it in Magento
 * Real-world example 
-  * API Integration example
-  * Two million prices
 
 ---
 
-## What is Async?
+## What do we mean by asynchronous?
 
-* The ability to execute operations out of order, sometimes in reaction to external events
+* The ability to execute operations out of order
 * E.g. Ajax
 * E.g. Email queues in Magento (deferred sending of emails)
 * E.g. Gearman
 
 Note:
-We are familiar with async patterns in other areas of development
+- Async can mean many things
+- Async can be implemented in many ways
+- We are already familiar with async patterns in other areas of development
 
 ---
 
-In synchronous (imperative) programming:
+In a synchronous program:
 
 @ul
 
@@ -56,18 +55,19 @@ In synchronous (imperative) programming:
 @ulend
 
 Note:
+- Also known as 'imperative' or 'linear execution'
 - Therefore, the order of execution is predictable
 - The code in an asynchronous program DOES have to be executed in the order it was written.
 
 ---
 
-In asynchronous programming:
+In an asynchronous program:
 
 @ul
 
 * We issue a statement
-* While we are waiting for it to complete, we can perform other tasks
-* When it has finished, we run a callback function
+* While we are waiting for it to complete, we can run other statements
+* Once the first statement has a result, it is returned to us
 
 @ulend
 
@@ -94,7 +94,7 @@ Note:
 
 ---
 
-## Programming Asynchronously: Core Concepts
+## Asynchronous Programming
 
 @ul
 
@@ -128,8 +128,7 @@ Note:
 
 - Functions that can be suspended and resumed whilst maintaining their state. 
 
-- The coroutine can be suspended whilst waiting for some task to complete or information to arrive, 
-leaving the CPU free to perform other tasks.
+- The coroutine can be suspended whilst waiting for some task to complete or information to arrive, leaving the CPU free to perform other tasks.
 
 @ulend
 
@@ -154,19 +153,24 @@ Note:
 
 ---
 
-## Implementing Async Programming using Event-Driven Programming
+## Event-Driven Programming
 
 @ul
 
-* It represents an application flow control that is determined by events or changes in state.
+* A programming paradigm which makes use of the 'Reactor' pattern
+
+* Represents an application flow control that is determined by events or changes in state.
 
 * Therefore you cannot say exactly when anything in your program is going to happen.
 
 @ulend
 
+Note:
+- Event-driven programming is just one way of writing async programs
+
 ---
 
-## Event-driven programming with PHP
+## How to do this with PHP?
 
 @ul
 
@@ -179,6 +183,7 @@ Note:
 @ulend
 
 Note:
+- How can we do this in PHP? Using these libraries and frameworks
 - There were a lot of libraries to implement event driven programming in PHP 
 - However, work on that goal has now coalesced around these projects
 - These are now the most up-to-date and frequently maintained
@@ -203,17 +208,17 @@ Note:
 
 ---
 
-## Novel ways to use async techniques in Magento
+## Using Async with Magento
 
-A task is a good candidate for the event-driven programming approach if:
+A task is a good candidate for this approach if:
 
 @ul
 
-* We don't care too much about the order in which things happen
+* We don't care about the order in which things happen
 
-* We want to deal with vast amounts of data, but only have limited resources (e.g. RAM)
+* We want to deal with vast amounts of data, but have only limited resources
 
-* We can break it down in smaller sub-tasks and wrap each one in a child process, which does not need to communicate with other child processes
+* It can be broken down into smaller sub-tasks, each wrapped in a child process, which doesn't need to communicate with other child processes
 
 @ulend
 
@@ -227,13 +232,13 @@ A task is a good candidate for the event-driven programming approach if:
     * Process images sequentially in batches. Finish one batch before starting another.
 
 * The async way:
-    * Process images asyncly in batches. Start a new process for each batch and wrap each process in a promise. Wait for each promise to resolve.  
+    * Process images asyncly in batches. Start a new process for each batch and wrap each process in a promise.  
 
 @ulend
 
 Note:
 - Forking processes is recommended when working with the filesystem in async programs, because of blocking issues
-- Using the ChildProcess React component
+- Using the `react/child-process` component
 
 - Add sync/async screenshots of image import command here
 
@@ -244,10 +249,10 @@ Note:
 @ul
 
 * The sync way:
-    * Load the whole resultset into memory, then process it
+    * Load the whole resultset into memory, then process it.
 
 * The async way
-    * Load each row of the result into memory one at a time, then process it
+    * Load each row of the result into memory one at a time, then process it.
 
 @ulend
 
@@ -281,11 +286,64 @@ Note:
 
 ---
 
-## Example of an Integration with Magento 2
+## Real-world Example of an Integration with Magento 2
 
 ---
 
+## Business requirements
 
+@ul
+
+* Clients wants to import prices from ERP backend into Magento 2, on a cron, every day
+
+* The client has created their own price logic which determines the prices a customer sees on the frontend
+
+* That means there are multiple price-affecting criteria, e.g. Customer Group, Product Group, Tier Pricing
+
+* There are other data to import and export, e.g. Orders, Images, Documents
+
+@ulend
+
+---
+
+## The solution: Price import
+
+@ul 
+
+* The integration pulls data from the ERP via their API
+
+* Responses written to file on the server (Using `react/stream`)
+
+* The integration streams saved responses to the Price Calculation Engine (Using `react/stream`)
+
+* This approach means prices can be imported before all the data has been retrieved from the API and uses less memory
+
+@ulend
+
+Note:
+- There will be other ways of doing this, but this is the solution we chose
+
+---
+
+## The solution: Image import
+
+@ul
+
+* Images are pulled from the client server
+
+* Images are batched and processed asyncly using a custom tool built with `react/child-process`
+
+@ulend
+
+---
+
+## Performance benchmarks
+
+Note:
+- Write a command (like the async image command) which asyncly imports millions (or at least thousands) of prices into demo catalog
+- Use screenshots from that as benchmark
+- Display total execution time of sync and async commands
+- Display total memory usage of sync and async commands
 
 ---
 
