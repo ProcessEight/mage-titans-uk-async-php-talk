@@ -288,33 +288,35 @@ Note:
 
 ## Real-world Example of an Integration with Magento 2
 
+Note:
+- Some examples of how I used async programming to make an ERP integration more efficient 
+
 ---
 
 ## Business requirements
 
 @ul
 
-* Clients wants to import prices from ERP backend into Magento 2, on a cron, every day
+* Client is migrating to Magento 2 from a legacy system
 
-* The client has created their own price logic which determines the prices a customer sees on the frontend
+* Clients wants to import multiple types of data (prices, customers, product images) from ERP backend into Magento 2, on a cron, every day
 
-* That means there are multiple price-affecting criteria, e.g. Customer Group, Product Group, Tier Pricing
+* For prices, client has created their own price logic which determines the prices a customer sees on the frontend
 
-* There are other data to import and export, e.g. Orders, Images, Documents
+* That means for every product there are multiple prices based on several criteria, e.g. Customer Group, Product Group, Tier Pricing
 
 @ulend
 
 ---
 
-## The solution: Price import
+## Price import
 
 @ul 
 
-* The integration pulls data from the ERP via their API
 
-* Responses written to file on the server (Using `react/stream`)
+* Price data is pulled from the ERP API and responses written to file asyncly on the server (Using `react/stream`)
 
-* The integration streams saved responses to the Price Calculation Engine (Using `react/stream`)
+* Saved responses streamed asyncly to the Price Calculation Engine (Using `react/stream`)
 
 * This approach means prices can be imported before all the data has been retrieved from the API and uses less memory
 
@@ -322,10 +324,11 @@ Note:
 
 Note:
 - There will be other ways of doing this, but this is the solution we chose
+- The flow chart we produced to map their price logic was unreal. Four sides of A3!
 
 ---
 
-## The solution: Image import
+## Image processing
 
 @ul
 
@@ -344,11 +347,22 @@ Note:
 
 ---
 
-## Performance benchmarks
+## Customer import
+
+@ul
+
+* Customers are pulled from the client server
+
+* Customers are batched and processed asyncly using a custom tool
+
+![Sync](assets/images/catalog-image-resize-sync.png)
+
+![Async](assets/images/catalog-image-resize-async.png)
+
+@ulend
 
 Note:
-- Display total execution time of sync and async commands
-- Display total memory usage of sync and async commands
+- Using the `react/child-process` component
 
 ---
 
