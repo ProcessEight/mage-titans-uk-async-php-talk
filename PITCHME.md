@@ -307,12 +307,15 @@ Note:
 
 @ulend
 
+Note:
+- There will be other ways of doing this, but this is the solution we chose
+- The flow chart we produced to map their price logic was unreal. Four sides of A3!
+
 ---
 
 ## Price import
 
 @ul 
-
 
 * Price data is pulled from the ERP API and responses written to file asyncly on the server (Using `react/stream`)
 
@@ -322,9 +325,12 @@ Note:
 
 @ulend
 
+![Sync](assets/images/catalog-price-import-sync.png)
+
+![Async](assets/images/catalog-price-import-async.png)
+
 Note:
-- There will be other ways of doing this, but this is the solution we chose
-- The flow chart we produced to map their price logic was unreal. Four sides of A3!
+- Using the `react/child-process` component
 
 ---
 
@@ -336,11 +342,11 @@ Note:
 
 * Images are batched and processed asyncly using a custom tool
 
+@ulend
+
 ![Sync](assets/images/catalog-image-resize-sync.png)
 
 ![Async](assets/images/catalog-image-resize-async.png)
-
-@ulend
 
 Note:
 - Using the `react/child-process` component
@@ -355,9 +361,9 @@ Note:
 
 * Customers are batched and processed asyncly using a custom tool
 
-![Sync](assets/images/catalog-image-resize-sync.png)
+![Sync](assets/images/customer-import-sync.png)
 
-![Async](assets/images/catalog-image-resize-async.png)
+![Async](assets/images/customer-import-async.png)
 
 @ulend
 
