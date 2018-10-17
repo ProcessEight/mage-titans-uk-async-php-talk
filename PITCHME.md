@@ -331,17 +331,22 @@ Note:
 
 * Images are pulled from the client server
 
-* Images are batched and processed asyncly using a custom tool built with `react/child-process`
+* Images are batched and processed asyncly using a custom tool
+
+![Sync](assets/images/catalog-image-resize-sync.png)
+
+![Async](assets/images/catalog-image-resize-async.png)
 
 @ulend
+
+Note:
+- Using the `react/child-process` component
 
 ---
 
 ## Performance benchmarks
 
 Note:
-- Write a command (like the async image command) which asyncly imports millions (or at least thousands) of prices into demo catalog
-- Use screenshots from that as benchmark
 - Display total execution time of sync and async commands
 - Display total memory usage of sync and async commands
 
