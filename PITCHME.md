@@ -35,7 +35,7 @@ Working with PHP for ten years, Magento for six
 * The ability to execute operations out of order
 * E.g. Ajax
 * E.g. Email queues in Magento (deferred sending of emails)
-* E.g. Gearman
+* E.g. Batch processing
 
 Note:
 - Async can mean many things
@@ -112,6 +112,8 @@ Note:
 ## Promises
 
 - A Promise is a temporary placeholder used as a result whenever the result is not immediately available.
+
+- Similar to callbacks in JavaScript
 
 Note:
 - Once the result is ready, an event is emitted, which can be subscribed to and acted upon.
@@ -325,6 +327,10 @@ Note:
 
 @ulend
 
+---
+
+## Price import: Benchmark
+
 ![Sync](assets/images/catalog-price-import-sync.png)
 
 ![Async](assets/images/catalog-price-import-async.png)
@@ -344,6 +350,10 @@ Note:
 
 @ulend
 
+---
+
+## Image Processing: Benchmark
+
 ![Sync](assets/images/catalog-image-resize-sync.png)
 
 ![Async](assets/images/catalog-image-resize-async.png)
@@ -353,7 +363,7 @@ Note:
 
 ---
 
-## Customer import
+## Customer Import
 
 @ul
 
@@ -372,6 +382,10 @@ Note:
 
 ---
 
+## Customer Import: Benchmark
+
+---
+
 ## Summary
 
 @ul
@@ -386,4 +400,4 @@ Note:
 
 ## Thank you!
 
-`<?= $questions ?? exit(0); ?>`
+Questions & feedback
