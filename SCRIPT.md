@@ -6,7 +6,7 @@
 
 Hello, my name is Simon Frost and I am a senior backend Magento Engineer at a UK-based agency called Magium Commerce.
 
-Online you can find me under the handle Process Eight.
+I have been working with PHP for over ten years and with Magento since v1.4 and online you can find me under the handle Process Eight.
 
 ## Slide 4
 
@@ -14,11 +14,11 @@ So I have been working on an integration with an ERP system.
 
 In order to improve the performance of this integration I started investigating techniques for improving PHP performance.
 
-Asynchronous Programming is the one I found most promising and I want to share with you what I found, how it helped me and how it could help you.
+Now, Asynchronous Programming is the one I found most promising and I want to share with you what I found, how it helped me and how it could help you.
 
 ## Slide 5
 
-I'll introduce the idea of async programming first, then explain how we can use it in PHP and finally show how I used async programming to improve the performance of an ERP integration.
+I'll introduce the idea of async programming first, then explain how we can use it in PHP and finally show how I used async programming to improve the performance of that ERP integration.
 
 ## Slide 6
 
@@ -42,11 +42,11 @@ So the concept of 'asynchronicity' can be implemented in different ways.
 
 ## Slide 8
 
-Let's explore how we can use this concept to write programs. We'll start with an example of how most programs work; A statement is issued, for example to connect to a database, read a file or connect to an API.
+How can we use async to write better performing programs? We'll start with an example of how most programs work; A statement is issued, for example to connect to a database, read a file or connect to an API.
 
-Then the program has to wait until the results of that statement are ready - this stage is known as 'blocking' because the program is blocked.
+Then the program has to wait until the results of that statement are ready - this stage is known as 'blocking' because the program is blocked. Execution can't continue until the results are returned.
 
-After the results have been returned and processed, only then can the program move on and execute the next statement.
+After the program receives and processes the results, only then can the program move on and execute the next statement.
 
 The program continues like this until the end of the program is reached.
 
@@ -56,17 +56,17 @@ Now in an asynchronous program, we start from the same point by executing a stat
 
 However, whilst the program is waiting for the results of that statement, it can continue and execute another statement whilst it is waiting for the results of previous statements.
 
-Once the results of previous statements are ready, the program then processes the results at that point.
+Once the results of previous statements are ready, the program can then process the results.
 
-So the big difference is that there is much less blocking, the program can continue executing even if it is waiting for something.
+The program continues until all the results have been returned and processed.
 
 ## Slide 10
 
-The big takeaway from the previous two slides is that if a program is dealing with a lot input/output (that's the database calls, file reads, API calls or other computationally expensive operations), then this can be quite inefficient, as the program is basically idling whilst waiting for the I/O to complete.
+The big takeaway from the previous two slides is that if a program is dealing with a lot of database calls, file reads or writes, API calls, which we can collectively call 'input/output' operations, then the sync approach can be quite inefficient, as the program is basically idling whilst waiting for the I/O to complete.
 
 Whilst the performance of hardware has massively improved, the speed of programming languages has not kept pace.
 
-Async programming takes advantage of these circumstances, by maximising CPU usage and minimising I/O.
+Async programming aims to take advantage of these circumstances, by maximising CPU usage and minimising I/O.
 
 ## Slide 11
 
@@ -90,15 +90,13 @@ The program can subscribe to these events and react appropriately.
 
 ## Slide 14
 
-Co-routines are a way of mitigating the impact of blocking.
+Co-routines are methods which can be interrupted or paused.
 
-They can be used to write async code using a more sync-style syntax.
+Exceptions can also be 'thrown in' to co-routines, which means they can be used to write async code using a more sync-style syntax.
 
 ## Slide 15
 
 The Event Loop is a key part of the Reactor Pattern, which is one way of programming asynchronously.
-
-The 
 
 ## Slide 16
 
@@ -108,7 +106,7 @@ The big take away from this slide is that in Event-Driven Programming, you canno
 
 ## Slide 17
 
-How can we use tools and why should be we use PHP?
+How can we use these tools and why should we use PHP?
 
 ## Slide 18
 
@@ -118,7 +116,7 @@ I think these reasons are the most compelling.
 
 Many of the PHP projects which support async programming use core PHP language features, so there is no magic or special extensions required.
 
-We're just using PHP in a different way.
+Remember this is the same PHP we are all used to - We're just using it in a different way.
 
 ## Slide 19
 
@@ -130,21 +128,19 @@ These projects are now the most up-to-date and frequently maintained​.
 
 ## Slide 20
 
-Let's bring this theoretical portion of the presentation to a close with a look at how we can use Async PHP with Magento.
+OK, now that we've learnt a bit of theory, let's take a look at how we can bring Async, PHP and Magento together.
 
 ## Slide 21
 
 Now these criteria are subjective, depending on the way that async has been implemented within the app.
 
-We don't care about the order in which things happen - because we can't guarantee this if using the Event-Driven approach to using async.
+There are lots of tasks in Magento which can benefit from using an async approach. 
 
-We want to deal with vast amounts of data, but have only limited resources​ - because when using async, we only need as much memory as is necessary to read a single line of a file or row from a database at a time.
-
-There are lots of tasks in Magento which can benefit from using an async approach. Here are some examples.
+Over the next few slides, I'll show you some examples.
 
 ## Slide 22
 
-Using the 'child-process' component of the ReactPHP project, I created a tool which chops up a task to resize hundreds of images and then forks new processes to run each of these smaller tasks - essentially pseudo-multi-threading.
+We can break up a task to resize hundreds of images and then fork new processes to run each of these smaller tasks - essentially pseudo-multi-threading.
 
 ## Slide 23
 
@@ -160,13 +156,13 @@ The sync way is limited by the memory you have available at the time the script 
 
 The async way is limited only by the amount of memory it takes to process one line of the file at a time​.
 
-Obviously, this allows us to process ridiculously large (think GB) or even infinitely large files (because it's just a stream after all)​.
+Obviously, this allows us to process ridiculously large (think GB).
 
 Of course, this approach is not suitable if the rows in a file must be read in a certain order (i.e. Importing config products).
 
 ## Slide 25
 
-So I'd like to wrap up this presentation by showing how I used these examples we've just seen to make an ERP integration more efficient​.
+For the final part of this presentation I'll show you how we used these examples we've just seen to make an ERP integration more efficient​.
 
 ## Slide 26
 
@@ -174,7 +170,7 @@ There will be other ways of doing this, but this is the solution we chose​.
 
 The flow chart we produced to map their price logic was unreal. Four sides of A3!​
 
-The clients wanted some imports to run hourly - unfortunately, some of the import processes took so long, due to volume of data that these import processes would overlap.
+The clients wanted some imports to run hourly - unfortunately, some of these processes took so long to process, due to the volume of data, that they would overlap.
 
 ## Slide 27
 
@@ -185,6 +181,8 @@ The solution I came up with was to use the example of async batch processing, fo
 As you can see from these screenshots, the sync version of the command used 54MB to import over 2,000 prices, whereas the async version used just 34MB.
 
 So our async command uses 40% less memory to do the same task!
+
+It's the same output, it just uses less memory.
 
 ## Slide 29
 
